@@ -80,6 +80,7 @@ class App extends Component {
               <input
                 type="text"
                 name="q"
+                value={searchTerm}
                 className="form-control"
                 placeholder="Search posts ...."
                 onChange={this.onSearchChange} />
