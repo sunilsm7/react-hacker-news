@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 
-
 const list = [
   {
     title: 'React',
@@ -37,7 +36,98 @@ const list = [
   },
 ];
 
+
 const isSearched = (searchTerm) => item => item.title.toLowerCase().includes(searchTerm.toLocaleString());
+
+
+class Button extends Component {
+  render() {
+    const {
+      name='',
+      onClick,
+      className='',
+      children,
+    } = this.props;
+
+    return (
+      <button
+        name={name}
+        onClick={onClick}
+        className={className}
+        type="button"
+      >
+      { children }
+      </button>
+    );
+  }
+}
+
+
+class Search extends Component {
+  render() {
+    const {value, onChange, children } = this.props;
+
+    return (
+      <form className="form-inline">
+        <div className="form-group">
+          { children }
+        </div>
+
+        <div className="form-group">
+          <input
+            type="text"
+            name="q"
+            value={value}
+            className="form-control"
+            placeholder="Search posts ...."
+            onChange={onChange} />
+        </div>
+      </form>
+    );
+  }
+}
+
+
+class Table extends Component {
+  render() {
+    const {list, pattern, onDismiss, showMessage } = this.props;
+
+    return (
+      <div>
+        {list.filter(isSearched(pattern)).map(item =>
+          <div key={item.objectID} className="card mb-2">
+            <div className="card-body">
+              <h5 className="card-title">
+                <a href={item.url}>{item.title}</a>
+              </h5>
+              <p className="card-text">
+                
+                <span>Author: {item.author}</span>
+                <span>Comments: {item.num_comments}</span>
+                <span>Points: {item.points}</span>
+              </p>
+              <span>
+                <Button
+                  onClick={() => onDismiss(item.objectID)}
+                  className="btn btn-primary mr-2">
+                  Dismiss
+                </Button>
+                <Button                
+                  name="btn-message"
+                  className="btn btn-info"
+                  onClick={showMessage}
+                  >Show More
+                </Button>
+              </span>
+            </div>
+          </div> 
+        )}
+      </div>
+    )
+  }
+}
+
+
 
 class App extends Component {
   constructor(props) {
@@ -73,53 +163,19 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h1 className="App-title">Hacker News React</h1>
-        <div className="Search-form">
-          <form className="form-inline">
-            <div className="form-group">
-              <input
-                type="text"
-                name="q"
-                value={searchTerm}
-                className="form-control"
-                placeholder="Search posts ...."
-                onChange={this.onSearchChange} />
-            </div>
-          </form>
-        </div>
-        {list.filter(isSearched(searchTerm)).map((item)=> {
+        <h1 className="App-title">React Hacker News</h1>
+          <Search
+            value={searchTerm}
+            onChange={this.onSearchChange}
+          > Search
+          </Search>
 
-          return(
-            <div key={item.objectID} className="card mb-2">
-              <div className="card-body">
-                <h5 className="card-title">
-                  <a href={item.url}>{item.title}</a>
-                </h5>
-                <p className="card-text">
-                  
-                  <span>Author: {item.author}</span>
-                  <span>Comments: {item.num_comments}</span>
-                  <span>Points: {item.points}</span>
-                </p>
-                <span>
-                  <button
-                    onClick={() => this.onDismiss(item.objectID)}
-                    type="button"
-                    className="btn btn-primary mr-2">
-                    Dismiss
-                  </button>
-                  <button
-                    type="button"
-                    name="btn-message"
-                    className="btn btn-info"
-                    onClick={this.showMessage}
-                    >Show More
-                  </button>
-                </span>
-              </div>
-            </div>
-          );
-        })}
+        <Table
+          list={list}
+          pattern={searchTerm}
+          onDismiss={this.onDismiss}
+          showMessage={this.showMessage}
+        />
       </div>
     );
   }
