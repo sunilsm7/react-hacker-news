@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import 'whatwg-fetch';
 
 import './App.css';
 
@@ -13,10 +12,6 @@ const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page=';
 const PARAM_HPP = 'hitsPerPage=';
-
-const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
-
-console.log(url);
 
 const largeColumn = {
   width: '40%',
@@ -130,6 +125,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       results: null,
       searchKey: '',
@@ -140,10 +136,10 @@ class App extends Component {
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
-    this.onDismiss = this.onDismiss.bind(this);
     this.showMessage = this.showMessage.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -158,12 +154,13 @@ class App extends Component {
       ? results[searchKey].hits
       : [];
 
-      const updatedHits = [
-        ...oldHits,
-        ...hits
-      ]
+    const updatedHits = [
+      ...oldHits,
+      ...hits
+    ];
+
     this.setState({ 
-      result: { 
+      results: { 
         ...results,
         [searchKey]: { hits: updatedHits, page }
       } 
@@ -194,7 +191,6 @@ class App extends Component {
   onDismiss(id) {
     const { searchKey, results } = this.state;
     const { hits, page } = results[searchKey];
-
 
     const isNotId = item => item.objectID !== id;
     const updatedHits = hits.filter(isNotId);
