@@ -140,9 +140,39 @@ class Search extends Component {
 }
 
 class Table extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      sortKey: 'NONE',
+      isSortReverse: false,
+    };
+
+    this.onSort = this.onSort.bind(this);
+
+  }
+
+ onSort(sortKey) {
+  const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
+
+  this.setState({ sortKey, isSortReverse });
+  }
+
+
   render() {
-    const {list, onDismiss, sortKey, onSort, isSortReverse, showMessage } = this.props;
+    const {
+      list,
+      onDismiss,
+      showMessage 
+    } = this.props;
+
+    const {
+      sortKey,
+      isSortReverse,
+    } = this.state;
+
     const sortedList = SORTS[sortKey](list);
+
     const reverseSortedList = isSortReverse
       ? sortedList.reverse()
       : sortedList;
@@ -153,7 +183,7 @@ class Table extends Component {
           <span style={largeColumn}>
             <Sort
               sortKey={'TITLE'}
-              onSort={onSort}
+              onSort={this.onSort}
               activeSortKey={sortKey}
             >TITLE
             </Sort>
@@ -161,7 +191,7 @@ class Table extends Component {
           <span style={midColumn}>
             <Sort
               sortKey={'AUTHOR'}
-              onSort={onSort}
+              onSort={this.onSort}
               activeSortKey={sortKey}
             >AUTHOR
             </Sort>
@@ -169,7 +199,7 @@ class Table extends Component {
           <span style={smallColumn}>
             <Sort
               sortKey={'COMMENTS'}
-              onSort={onSort}
+              onSort={this.onSort}
               activeSortKey={sortKey}
             >COMMENTS
             </Sort>
@@ -177,18 +207,13 @@ class Table extends Component {
           <span style={smallColumn}>
             <Sort
               sortKey={'POINTS'}
-              onSort={onSort}
+              onSort={this.onSort}
               activeSortKey={sortKey}
             >POINTS
             </Sort>
           </span>
           <span style={smallColumn}>
-            <Sort
-              sortKey={'ARCHIVE'}
-              onSort={onSort}
-              activeSortKey={sortKey}
-            >ARCHIVE
-            </Sort>
+            ARCHIVE
           </span>
         </div>
         {reverseSortedList.map(item =>
@@ -252,8 +277,6 @@ class App extends Component {
       searchTerm: DEFAULT_QUERY,
       error: null,
       isLoading: false,
-      sortKey: 'NONE',
-      isSortReverse: false,
     };
 
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -263,7 +286,6 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
-    this.onSort = this.onSort.bind(this);
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -351,21 +373,13 @@ class App extends Component {
     console.log(event.target.name);
   }
 
-  onSort(sortKey) {
-    const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
-
-    this.setState({ sortKey, isSortReverse });
-  }
-
   render() {
     const {
       searchTerm,
       results,
       searchKey,
       error,
-      isLoading,
-      sortKey,
-      isSortReverse
+      isLoading
     } = this.state;
 
     const page = (
@@ -397,9 +411,6 @@ class App extends Component {
             </div>
           : <Table
               list={list}
-              sortKey={sortKey}
-              isSortReverse={isSortReverse}
-              onSort={this.onSort}
               onDismiss={this.onDismiss}
               showMessage={this.showMessage}
             />
