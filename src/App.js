@@ -362,16 +362,14 @@ class App extends Component {
   }
 
   onSearchSubmit(event) {
-    event.preventDefault();
     const { searchTerm } = this.state;
-    console.log(searchTerm);
-
-    this.setState({ searchKey: searchTerm});
-    this.fetchSearchTopStories(searchTerm);
+    this.setState({ searchKey: searchTerm });
 
     if (this.needsToSearchTopStories(searchTerm)) {
       this.fetchSearchTopStories(searchTerm);
     }
+
+    event.preventDefault();
   }
 
   showMessage(event) {
